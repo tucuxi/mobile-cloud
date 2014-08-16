@@ -1,24 +1,15 @@
 package org.magnum.mobilecloud.video;
 
-import java.io.File;
-
-import org.apache.catalina.connector.Connector;
-import org.apache.coyote.http11.Http11NioProtocol;
 import org.magnum.mobilecloud.video.auth.OAuth2SecurityConfiguration;
 import org.magnum.mobilecloud.video.repository.VideoRepository;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
-import org.springframework.boot.context.embedded.ConfigurableEmbeddedServletContainer;
-import org.springframework.boot.context.embedded.EmbeddedServletContainerCustomizer;
-import org.springframework.boot.context.embedded.tomcat.TomcatConnectorCustomizer;
-import org.springframework.boot.context.embedded.tomcat.TomcatEmbeddedServletContainerFactory;
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.data.rest.webmvc.config.RepositoryRestMvcConfiguration;
+import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
 //Tell Spring to automatically inject any dependencies that are marked in
@@ -27,6 +18,7 @@ import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 //Tell Spring to automatically create a JPA implementation of our
 //VideoRepository
 @EnableJpaRepositories(basePackageClasses = VideoRepository.class)
+@EnableTransactionManagement
 // Tell Spring to turn on WebMVC (e.g., it should enable the DispatcherServlet
 // so that requests can be routed to our Controllers)
 @EnableWebMvc

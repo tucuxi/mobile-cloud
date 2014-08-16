@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -35,6 +36,7 @@ public class VideoSvcController {
 
 	@RequestMapping(value = VideoSvcApi.VIDEO_SVC_PATH + "/{" + ID_PARAMETER
 			+ "}", method = RequestMethod.GET)
+	@Transactional(readOnly = true)
 	public @ResponseBody ResponseEntity<Video> getVideoById(
 			@PathVariable(ID_PARAMETER) long id) {
 		if (videos.exists(id)) {
@@ -45,15 +47,16 @@ public class VideoSvcController {
 	}
 
 	@RequestMapping(value = VideoSvcApi.VIDEO_SVC_PATH, method = RequestMethod.POST)
+	@Transactional
 	public @ResponseBody Video addVideo(@RequestBody Video v) {
 		return videos.save(v);
 	}
 
 	@RequestMapping(value = VideoSvcApi.VIDEO_SVC_PATH + "/{" + ID_PARAMETER
 			+ "}/like", method = RequestMethod.POST)
+	@Transactional
 	public ResponseEntity<Void> likeVideo(@PathVariable(ID_PARAMETER) long id,
 			Principal p) {
-		System.out.println("like: id=" + id + ", user=" + p.getName());
 		Video v = videos.findOne(id);
 		if (v != null) {
 			if (v.like(p.getName())) {
@@ -69,6 +72,7 @@ public class VideoSvcController {
 
 	@RequestMapping(value = VideoSvcApi.VIDEO_SVC_PATH + "/{" + ID_PARAMETER
 			+ "}/unlike", method = RequestMethod.POST)
+	@Transactional
 	public ResponseEntity<Void> unlikeVideo(
 			@PathVariable(ID_PARAMETER) long id, Principal p) {
 		Video v = videos.findOne(id);
@@ -85,12 +89,14 @@ public class VideoSvcController {
 	}
 
 	@RequestMapping(value = VideoSvcApi.VIDEO_TITLE_SEARCH_PATH, method = RequestMethod.GET)
+	@Transactional(readOnly = true)
 	public @ResponseBody Collection<Video> findByTitle(
 			@RequestParam(VideoSvcApi.TITLE_PARAMETER) String title) {
 		return videos.findByName(title);
 	}
 
 	@RequestMapping(value = VideoSvcApi.VIDEO_DURATION_SEARCH_PATH, method = RequestMethod.GET)
+	@Transactional(readOnly = true)
 	public @ResponseBody Collection<Video> findByDurationLessThan(
 			@RequestParam(VideoSvcApi.DURATION_PARAMETER) long duration) {
 		return videos.findByDurationLessThan(duration);
@@ -98,6 +104,7 @@ public class VideoSvcController {
 
 	@RequestMapping(value = VideoSvcApi.VIDEO_SVC_PATH + "/{"
 			+ ID_PARAMETER + "}" + "/likedby")
+	@Transactional(readOnly = true)
 	public ResponseEntity<Set<String>> getUsersWhoLikedVideo(
 			@PathVariable(ID_PARAMETER) long id) {
 		if (videos.exists(id)) {
